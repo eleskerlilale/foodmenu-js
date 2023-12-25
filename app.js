@@ -42,19 +42,96 @@ const menuItems = [
         count: 0
     }
 ]
+const cartArr=[]
 
-const buttonMain=document.querySelectorAll(".menu button")
+const buttonMain=document.querySelectorAll(".menu .content button")
+
+const cartSummary=document.querySelector(".cart-summary")
+
+function item(){
+    cartSummary.innerHTML=``
+    cartArr.forEach( item => {
+        cartSummary.innerHTML+=`
+            <li>
+            <div class="plate">
+            <img src="images/${item.image}" alt="Fish Sticks and Fries" class="plate" />
+            <div class="quantity">1</div>
+            </div>
+            <div class="content">
+            <p class="menu-item">${item.name}</p>
+            <p class="price">$${item.price}</p>
+            </div>
+            <div class="quantity__wrapper">
+            <button class="decrease">
+                <img src="images/chevron.svg" />
+            </button>
+            <div class="quantity">1</div>
+            <button class="increase">
+                <img src="images/chevron.svg" />
+            </button>
+            </div>
+            <div class="subtotal">
+            $${item.price}
+            </div>
+        </li>
+            `
+    })
+    console.log("isliyir")
+}
+// item()
+const cartPlate=document.querySelectorAll(".cart-summary .plate .plate")
+const cartMenuItem=document.querySelectorAll(".cart-summary .menu-item")
+const cartPrice=document.querySelectorAll(".cart-summary .price")
+const cartDecrease=document.querySelectorAll(".cart-summary .decrease")
+const cartIncrease=document.querySelectorAll(".cart-summary .increase")
+const cartQuantity1=document.querySelectorAll(".cart-summary .plate .quantity")
+const cartQuantity2=document.querySelectorAll(".cart-summary .quantity__wrapper .quantity")
+const cartSubtotal=document.querySelectorAll(".cart-summary .subtotal")
+const totalPrice=document.querySelector(".totals .subtotal")
+const totalTax=document.querySelector(".totals .tax")
+const totalsTotal=document.querySelector(".totals .total")
+
 for(let i=0; i<buttonMain.length ;i++){
     buttonMain[i].addEventListener("click", () => {
         if(buttonMain[i].classList.value=='add'){
-            buttonMain[i].classList.add(".in-cart")
-            buttonMain[i].classList.remove(".add")
+            buttonMain[i].classList.remove("add")
+            buttonMain[i].classList.add("in-cart")
             buttonMain[i].innerHTML=`<img src="images/check.svg" alt="Check" />
             In Cart`
+            cartArr.push(menuItems[i])
+            console.log(cartArr);
+            item()
+            console.log(cartIncrease)
         }else{
-            buttonMain[i].classList.remove(".in-cart")
-            buttonMain[i].classList.add(".add")
-            buttonMain[i].innerText=`Add to Cart`
+            buttonMain[i].classList.remove("in-cart")
+            buttonMain[i].classList.add("add")
+            buttonMain[i].innerText=`Add to Cart`   
         }
     })
 }
+
+cartIncrease.forEach((increase,i) => {
+    increase.addEventListener("click", () => {
+        console.log("intro")
+        const price = Number(cartPrice[i].innerText.slice(1,2)+cartPrice[i].innerText.slice(3,5))
+        const k=Number(cartQuantity1[i].innerText)+1
+        const subTotal= String(price*k)
+        cartQuantity1[i].innerHTML=k
+        cartQuantity2[i].innerHTML=k
+        cartSubtotal[i].innerHTML=`$${subTotal.slice(0,subTotal.length-2)+'.'+subTotal.slice(subTotal.length-2, subTotal.length)}`
+    })
+})
+cartDecrease.forEach((decrease, i )=> {
+    decrease.addEventListener("click", () => {
+        if(Number(cartQuantity1[i].innerText)==1){
+            alert("olmaz")
+        }else{
+            const price = Number(cartPrice[i].innerText.slice(1,2)+cartPrice[i].innerText.slice(3,5))
+            const k=Number(cartQuantity1[i].innerText)-1
+            const subTotal= String(price*k)
+            cartQuantity1[i].innerHTML=k
+            cartQuantity2[i].innerHTML=k
+            cartSubtotal[i].innerHTML=`$${subTotal.slice(0,subTotal.length-2)+'.'+subTotal.slice(subTotal.length-2, subTotal.length)}`
+        }
+    })
+})
